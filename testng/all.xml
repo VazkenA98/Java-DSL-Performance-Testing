@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Main Test Suite" parallel="methods">
+    <listeners>
+    </listeners>
+    <test name="All API tests">
+        <packages>
+            <package name="com.picsart.tests.*">
+            </package>
+        </packages>
+    </test>
+</suite>
