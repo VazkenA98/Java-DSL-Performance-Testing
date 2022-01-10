@@ -30,10 +30,10 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'mvn -DskipTests clean verify'
-             /*    script {
-                    sh """rm -r allure-results/ || true"""
+                script {
+                    sh """rm -r results/ || true"""
                     currentBuild.description = "automation -> ${Branch} | WEB URL -> ${uploadURL}"
-                } */
+                }
             }
 
         }

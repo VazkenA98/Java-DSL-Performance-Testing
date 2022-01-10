@@ -21,8 +21,7 @@ public class PicsartWeb {
                 threadGroup("Main Page", 2, 5,
                         httpSampler("https://picsart.com")
                 ),
-                dashboardVisualizer(),
-                htmlReporter("googleTest-" + Instant.now().toString().replace(":", "-"))
+                htmlReporter("results/mainPageS")
         ).run();
         //System.out.println(stats.overall().sampleTimePercentile99().toSeconds());
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
