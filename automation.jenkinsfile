@@ -1,0 +1,94 @@
+def stashlist = []
+pipeline {
+    agent { label 'performance_automation' }
+    tools { maven 'maven-latest' }
+    parameters {
+        string(name: 'backendBranch', defaultValue: '', description: 'only for remote run ')
+        gitParameter branchFilter: 'origin/(.*)', defaultValue: 'master', description: 'Branch of PicsArt API automation repo', name: 'Branch', type: 'PT_BRANCH', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART', listSize: '1'
+        choice(name: 'testngXML', choices: ['all.xml'], description: 'testng.xml')
+        string(name: 'apiURL', defaultValue: 'https://api.picsart.com/preproduction', description: 'API URL')
+        string(name: 'webUrl', defaultValue: 'https://picsart.com', description: 'WEB URL')
+        string(name: 'uploadURL', defaultValue: 'https://api.picsart.com/preproduction', description: 'UPLOAD URL ')
+        string(name: 'threadCount', defaultValue: '1', description: 'TEST THREAD COUNT DEFAULT VALUE')
+    }
+
+    environment {
+        Jenkins_GH = credentials('Jenkins_GH')
+    }
+    options {
+        timestamps()
+        timeout(time: 10, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Git checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']],userRemoteConfigs: [[url: 'https://github.com/VazkenA98/Java-DSL-Performance-Testing.git']]])
+                script {
+                    APIURL = apiURL
+                    currentBuild.displayName = APIURL
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn -DskipTests clean verify'
+             /*    script {
+                    sh """rm -r allure-results/ || true"""
+                    currentBuild.description = "automation -> ${Branch} | WEB URL -> ${uploadURL}"
+                } */
+            }
+
+        }
+        stage('Test') {
+            steps {
+                sh "mvn failsafe:integration-test -Dbranch=${Branch}  -Dthreads=${threadCount} -Dtestng.xml.file=testng/${testngXML}  -Dpicsart.api.url=$APIURL  -Dpicsart.upload.api.url=${uploadURL} -Dpicsart.web.url=$WEBURL"
+            }
+        }
+    }
+/*     post {
+        always {
+            stash includes: 'allure-results *//*', name: '1'
+            script {
+                stashlist << 1
+                reportFailed()
+            }
+            dir("../$BUILD_NUMBER/$testngXML/$Branch/$backendBranch") {
+                sh """rm -r allure-results/ || true"""
+                script {
+                    for (el in stashlist) {
+                        unstash "${el}"
+                    }
+                }
+                script {
+                    allure includeProperties: false, jdk: '', results: [[path: 'picsart-api-automation/allure-results']]
+                    slackSend channel: 'auto-api-testing',
+                            color: '#BD7F1C',
+                            message: "Job: ${env.JOB_NAME} finished the run. Report can be found here:\n${env.BUILD_URL}allure/",
+                            teamDomain: 'picsart',
+                            token: 'iNAUNnBS6QU5a5MU1R9InyU1'
+                    reportPushToPr(backendBranch)
+                    reportPushToGithubPr(apiBranchNumber)
+                }
+            }
+        }
+    } */
+
+/* def reportFailed() {
+    if (fileExists("${WORKSPACE}/target/failed/")) {
+        def list = findFiles(glob: '**//* target/failed *//*')
+        for (el in list) {
+            echo "${el.name}"
+            failureLog = readFile("${WORKSPACE}/target/failed/${el.name}")
+            slackSend channel: 'automation_status_check',
+                    message: "Job: test ${env.BUILD_URL}allure/\n Api Core Backend Tests failed Log:\n  ${failureLog} ",
+                    teamDomain: 'picsart',
+                    token: 'JORDe01nxPWTiigJOMdSMlUN'
+        }
+
+    }
+    sh ''' rm -rf target/failed '''
+} */
+
+
+}
