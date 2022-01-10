@@ -6,6 +6,7 @@ import us.abstracta.jmeter.javadsl.core.TestPlanStats;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
@@ -17,17 +18,17 @@ public class PicsartWeb {
     @Test
     public void mainPageS() throws IOException {
         TestPlanStats stats = testPlan(
-                threadGroup("Main Page", 20, 30,
+                threadGroup("Main Page", 2, 5,
                         httpSampler("https://picsart.com")
                 ),
-                dashboardVisualizer()
-                //htmlReporter("googleTest-" + Instant.now().toString().replace(":", "-"))
+                dashboardVisualizer(),
+                htmlReporter("googleTest-" + Instant.now().toString().replace(":", "-"))
         ).run();
-        System.out.println(stats.overall().sampleTimePercentile99().toSeconds());
+        //System.out.println(stats.overall().sampleTimePercentile99().toSeconds());
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
     }
 
-    @Test
+   /* @Test
     public void mainPageSF() throws IOException {
         TestPlanStats stats = testPlan(
                 threadGroup("Main Page", 100, 5,
@@ -227,5 +228,5 @@ public class PicsartWeb {
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(10).toSeconds());
     }
 
-
+*/
 }

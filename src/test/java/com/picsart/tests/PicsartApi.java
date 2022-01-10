@@ -22,11 +22,11 @@ public class PicsartApi {
         TestPlanStats stats = testPlan(
                 threadGroup(2, 10, //uses 2 threads (concurrent users) which send 10 HTTP GET requests each
                         httpSampler("https://api.picsart.com/preproduction/photos/discover/cards?market=apple&include_premium=false")
-                ),
+                )
                 //this is just to log details of each request stats
                 //jtlWriter("test" + Instant.now().toString().replace(":", "-") + ".jtl")
                 // htmlReporter("googleTest-" + Instant.now().toString().replace(":", "-")),
-                responseFileSaver(Instant.now().toString().replace(":", "-") + "-response")
+                //responseFileSaver(Instant.now().toString().replace(":", "-") + "-response")
         ).run();
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
     }
@@ -138,9 +138,9 @@ public class PicsartApi {
     public void updateUsername() throws IOException {
         TestPlanStats stats = testPlan(
                 threadGroup("Update Username")
-                        .rampToAndHold(400, Duration.ofSeconds(10), Duration.ofSeconds(10))
+                        .rampToAndHold(1, Duration.ofSeconds(1), Duration.ofSeconds(1))
                         .children(
-                                httpSampler("https://api.picsart.com/users/update.json")
+                                httpSampler("https://api.picsart.com/preproduction/users/update.json")
                                         .header("x-api-key", "8780bad6-57e5-4918-9ae9-392e61c4dc7c")
                                         .body("${REQUEST_BODY}")
                                         .contentType(MimeTypes.Type.APPLICATION_JSON_UTF_8)
@@ -152,8 +152,8 @@ public class PicsartApi {
 
                                         )
                         ),
-                dashboardVisualizer()
-                //responseFileSaver(Instant.now().toString().replace(":", "-") + "-response")
+                //dashboardVisualizer()
+                responseFileSaver(Instant.now().toString().replace(":", "-") + "-response")
         ).run();
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
     }

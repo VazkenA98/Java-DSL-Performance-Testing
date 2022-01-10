@@ -3,9 +3,8 @@
     <listeners>
     </listeners>
     <test name="All API tests">
-        <packages>
-            <package name="com.picsart.tests.*">
-            </package>
-        </packages>
+        <classes>
+            <class name="com.picsart.tests.PicsartWeb"></class>
+        </classes>
     </test>
 </suite>
