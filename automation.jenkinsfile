@@ -1,6 +1,6 @@
 def stashlist = []
 pipeline {
-    agent { label 'performance_automation' }
+//     agent { label 'performance_automation' }
     tools { maven 'maven-latest' }
     parameters {
         string(name: 'backendBranch', defaultValue: '', description: 'only for remote run ')
