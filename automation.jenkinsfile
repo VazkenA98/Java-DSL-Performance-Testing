@@ -46,6 +46,7 @@ pipeline {
     }
      post {
         always {
+        allure includeProperties: false, jdk: '', results: [[path: 'Java-DSL-Performance-Testing/performance-results']]
         sh """
 
                     ls performance-results
