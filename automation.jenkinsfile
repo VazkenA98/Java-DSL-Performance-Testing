@@ -46,6 +46,10 @@ pipeline {
     }
      post {
         always {
+        sh """
+
+                    ls performance-results
+                    """
             stash includes: 'performance-results/*', name: '1'
             script {
                 stashlist << 1
