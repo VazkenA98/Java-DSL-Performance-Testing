@@ -49,7 +49,7 @@ pipeline {
 
             ls
             """
-            stash includes: 'performance-results ./*//*', name: '1'
+            stash includes: 'performance-results performance-results/*', name: '1'
             script {
                 stashlist << 1
             }
