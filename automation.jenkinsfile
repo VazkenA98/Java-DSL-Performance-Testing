@@ -44,8 +44,8 @@ pipeline {
     }
      post {
         always {
+            echo 'ls'
             stash includes: 'performance-results *//*', name: '1'
-            echo ls
             script {
                 stashlist << 1
             }
