@@ -38,14 +38,18 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh "mvn failsafe:integration-test -Dbranch=${Branch}  -Dthreads=${threadCount} -Dtestng.xml.file=testng/${testngXML}  -Dpicsart.api.url=$APIURL  -Dpicsart.upload.api.url=${uploadURL} -Dpicsart.web.url=$WEBURL"
+                sh "mvn test -Dbranch=${Branch}  -Dthreads=${threadCount} -Dtestng.xml.file=testng/${testngXML}  -Dpicsart.api.url=$APIURL  -Dpicsart.upload.api.url=${uploadURL} -Dpicsart.web.url=$WEBURL"
             }
         }
     }
      post {
         always {
-            echo """ls"""
-            stash includes: 'performance-results *//*', name: '1'
+
+            sh """
+
+            ls
+            """
+            stash includes: 'performance-results ./*//*', name: '1'
             script {
                 stashlist << 1
             }
