@@ -47,7 +47,6 @@ pipeline {
             stash includes: 'performance-results *//*', name: '1'
             script {
                 stashlist << 1
-                reportFailed()
             }
             dir("../$BUILD_NUMBER/$testngXML/$Branch") {
                 sh """rm -r performance-results/ || true"""
