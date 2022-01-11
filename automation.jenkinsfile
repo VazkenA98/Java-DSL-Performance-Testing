@@ -29,7 +29,7 @@ pipeline {
         stage('Build') {
             steps {
 
-                sh 'mvn -DskipTests clean verify'
+
                 script {
                     sh """ rm -rf  performance-results || true"""
                     sh """rm -r results/ || true"""
