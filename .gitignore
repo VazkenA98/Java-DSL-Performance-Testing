@@ -52,4 +52,4 @@ target
 ####################
 /logs/
 /allure-results/# Created by .ignore support plugin (hsz.mobi)
-/results/
+/performance-results/

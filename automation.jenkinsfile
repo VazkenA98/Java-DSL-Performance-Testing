@@ -43,33 +43,23 @@ pipeline {
             }
         }
     }
-/*     post {
+     post {
         always {
-            stash includes: 'allure-results *//*', name: '1'
+            stash includes: 'performance-results *//*', name: '1'
             script {
                 stashlist << 1
                 reportFailed()
             }
-            dir("../$BUILD_NUMBER/$testngXML/$Branch/$backendBranch") {
-                sh """rm -r allure-results/ || true"""
+            dir("../$BUILD_NUMBER/$testngXML/$Branch") {
+                sh """rm -r performance-results/ || true"""
                 script {
                     for (el in stashlist) {
                         unstash "${el}"
                     }
                 }
-                script {
-                    allure includeProperties: false, jdk: '', results: [[path: 'picsart-api-automation/allure-results']]
-                    slackSend channel: 'auto-api-testing',
-                            color: '#BD7F1C',
-                            message: "Job: ${env.JOB_NAME} finished the run. Report can be found here:\n${env.BUILD_URL}allure/",
-                            teamDomain: 'picsart',
-                            token: 'iNAUNnBS6QU5a5MU1R9InyU1'
-                    reportPushToPr(backendBranch)
-                    reportPushToGithubPr(apiBranchNumber)
-                }
             }
         }
-    } */
+    }
 
 /* def reportFailed() {
     if (fileExists("${WORKSPACE}/target/failed/")) {
