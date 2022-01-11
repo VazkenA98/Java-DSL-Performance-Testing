@@ -17,6 +17,7 @@ public class PicsartWeb {
 
     @Test
     public void mainPageS() throws IOException {
+        System.out.println("vzgo ");
         TestPlanStats stats = testPlan(
                 threadGroup("Main Page", 2, 5,
                         httpSampler("https://picsart.com")
