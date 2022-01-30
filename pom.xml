@@ -15,6 +15,11 @@
         <lombok.version>1.18.20</lombok.version>
         <testng.version>7.4.0</testng.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <allure.version>2.13.2</allure.version>
+        <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
+        <sonatype-plugins.versrion>1.5.1</sonatype-plugins.versrion>
+        <aspectj.version>1.9.4</aspectj.version>
+        <threads>1</threads>
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     </properties>
 
@@ -69,6 +74,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
@@ -77,28 +92,38 @@
     </dependencies>
     <build>
         <plugins>
-            <!-- Following plugin executes the testng tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.14.1</version>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
                 <configuration>
-                    <!-- Suite testng xml file to consider for test execution -->
+                    <parallel>methods</parallel>
+                    <threadCount>${threads}</threadCount>
                     <suiteXmlFiles>
-                            <file>testng/all.xml</file>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <file>testng/all.xml</file>
+
                     </suiteXmlFiles>
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
                 </configuration>
-            </plugin>
-            <!-- Compiler plugin configures the java version to be usedfor compiling
-                the code -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-                <version>${maven-compiler-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <!--This goal makes the build fail if you have test failures-->
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

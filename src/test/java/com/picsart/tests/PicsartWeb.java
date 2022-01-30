@@ -17,18 +17,17 @@ public class PicsartWeb {
 
     @Test
     public void mainPageS() throws IOException {
-        System.out.println("vzgo ");
         TestPlanStats stats = testPlan(
                 threadGroup("Main Page", 2, 5,
                         httpSampler("https://picsart.com")
-                ),
-                htmlReporter("performance-results/mainPageS")
+                )
+                //htmlReporter("performance-results/mainPageS")
         ).run();
         //System.out.println(stats.overall().sampleTimePercentile99().toSeconds());
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
     }
 
-   /* @Test
+    @Test
     public void mainPageSF() throws IOException {
         TestPlanStats stats = testPlan(
                 threadGroup("Main Page", 100, 5,
@@ -105,7 +104,8 @@ public class PicsartWeb {
                         .children(
                                 httpSampler("https://picsart.com/gold")
                         ),
-                dashboardVisualizer()
+                dashboardVisualizer(),
+                htmlReporter("performance-results/headerPagesSF")
         ).run();
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(5).toSeconds());
     }
@@ -143,13 +143,14 @@ public class PicsartWeb {
     public void challengesPageF() throws IOException {
         TestPlanStats stats = testPlan(
                 threadGroup("Challenges Page")
-                        .rampToAndHold(10, Duration.ofSeconds(5), Duration.ofSeconds(10))
-                        .rampToAndHold(50, Duration.ofSeconds(10), Duration.ofSeconds(5))
+                        .rampToAndHold(50, Duration.ofSeconds(5), Duration.ofSeconds(10))
+                        .rampToAndHold(100, Duration.ofSeconds(10), Duration.ofSeconds(5))
                         .rampTo(0, Duration.ofSeconds(10))
                         .children(
                                 httpSampler("https://picsart.com/challenges")
 
                         ),
+                htmlReporter("performance-results/challengesPageF"),
                 dashboardVisualizer()
         ).run();
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(10).toSeconds());
@@ -228,5 +229,4 @@ public class PicsartWeb {
         Assert.assertTrue(stats.overall().sampleTimePercentile99().toSeconds() <= Duration.ofSeconds(10).toSeconds());
     }
 
-*/
 }

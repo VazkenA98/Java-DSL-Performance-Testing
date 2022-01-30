@@ -46,17 +46,15 @@ pipeline {
     }
      post {
         always {
-        allure includeProperties: false, jdk: '', results: [[path: 'Java-DSL-Performance-Testing/performance-results']]
         sh """
-
                     ls performance-results
                     """
-            stash includes: 'performance-results/*', name: '1'
+            stash includes: 'allure-results/*', name: '1'
             script {
                 stashlist << 1
             }
             dir("../$BUILD_NUMBER/$testngXML/$Branch") {
-                sh """rm -r performance-results/ || true"""
+                sh """rm -r allure-results/ || true"""
                 script {
                     for (el in stashlist) {
                         unstash "${el}"
